@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Allow the public directory to handle its own Laravel rewrites.
+    RewriteRule ^public(?:/|$) - [L]
+
+    # Shared-hosting fallback when the document root cannot target /public.
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+Options -Indexes

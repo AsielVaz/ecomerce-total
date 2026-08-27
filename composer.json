@@ -45,6 +45,11 @@
             "Composer\\Config::disableProcessTimeout",
             "@php artisan dev"
         ],
+        "deploy-shared": [
+            "@php artisan optimize:clear --ansi",
+            "@php artisan config:cache --ansi",
+            "@php artisan view:cache --ansi"
+        ],
         "test": [
             "@php artisan config:clear --ansi @no_additional_args",
             "@php artisan test"
