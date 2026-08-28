@@ -31,7 +31,7 @@
                         <tr class="hover:bg-slate-50/70">
                             <td class="px-5 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="size-12 shrink-0 overflow-hidden rounded-xl bg-slate-100">@if ($product->image_url)<img class="size-full object-cover" src="{{ $product->image_url }}" alt="">@endif</div>
+                                    <div class="size-12 shrink-0 overflow-hidden rounded-xl bg-slate-100">@if ($product->primaryImageUrl())<img class="size-full object-cover" src="{{ $product->primaryImageUrl() }}" alt="">@endif</div>
                                     <div><p class="font-bold text-slate-900">{{ $product->name }}</p><p class="mt-1 text-xs text-slate-400">{{ $product->sku }}</p></div>
                                 </div>
                             </td>

@@ -32,7 +32,7 @@ class OrderController extends Controller
 
     public function show(Order $order): View
     {
-        $order->load(['items.product', 'user']);
+        $order->load(['items.product.images', 'user']);
         $statuses = OrderStatus::cases();
 
         return view('admin.orders.show', compact('order', 'statuses'));

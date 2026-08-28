@@ -21,7 +21,7 @@
             <div class="divide-y divide-slate-100">
                 @foreach ($order->items as $item)
                     <div class="flex gap-4 p-5 sm:p-6">
-                        <div class="size-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">@if ($item->product?->image_url)<img class="size-full object-cover" src="{{ $item->product->image_url }}" alt="">@endif</div>
+                        <div class="size-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">@if ($item->product?->primaryImageUrl())<img class="size-full object-cover" src="{{ $item->product->primaryImageUrl() }}" alt="">@endif</div>
                         <div class="min-w-0 grow"><p class="font-bold text-slate-900">{{ $item->product_name }}</p><p class="mt-1 text-xs text-slate-400">{{ $item->sku }} · {{ $item->quantity }} unidad(es)</p></div>
                         <p class="font-black text-slate-900">${{ number_format((float) $item->line_total, 2) }}</p>
                     </div>

@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\Product;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File;
 
 class UpdateProductRequest extends FormRequest
 {
@@ -23,6 +25,9 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
+        $product = $this->route('product');
+        $productId = $product instanceof Product ? $product->getKey() : $product;
+
         return [
             'category_id' => ['nullable', Rule::exists('categories', 'id')],
             'name' => [
@@ -43,8 +48,31 @@ class UpdateProductRequest extends FormRequest
             'compare_at_price' => ['nullable', 'numeric', 'gt:price', 'max:9999999999.99'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
             'image_url' => ['nullable', 'url:http,https', 'max:2048'],
+            'image_urls' => ['nullable', 'array', 'max:8'],
+            'image_urls.*' => ['nullable', 'url:http,https', 'max:2048', 'distinct'],
+            'images' => ['nullable', 'array', 'max:8'],
+            'images.*' => ['required', File::image()->types(['jpg', 'jpeg', 'png', 'webp'])->max('5mb')],
+            'removed_image_ids' => ['nullable', 'array'],
+            'removed_image_ids.*' => [
+                'integer',
+                'distinct',
+                Rule::exists('product_images', 'id')->where('product_id', $productId),
+            ],
             'is_featured' => ['sometimes', 'boolean'],
             'is_active' => ['sometimes', 'boolean'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'image_urls.*.url' => 'Cada dirección debe ser una URL válida con http o https.',
+            'images.*.image' => 'Cada archivo debe ser una imagen válida.',
+            'images.*.max' => 'Cada imagen debe pesar como máximo 5 MB.',
+            'removed_image_ids.*.exists' => 'La imagen seleccionada no pertenece a este producto.',
         ];
     }
 }

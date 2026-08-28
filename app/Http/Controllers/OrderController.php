@@ -36,7 +36,7 @@ class OrderController extends Controller
     {
         abort_unless((int) $order->user_id === (int) $request->user()->id, 404);
 
-        $order->load('items.product');
+        $order->load('items.product.images');
 
         return view('orders.show', compact('order'));
     }

@@ -2,8 +2,8 @@
 
 <article class="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-soft">
     <a class="relative block aspect-[4/3] overflow-hidden bg-slate-100" href="{{ route('products.show', $product) }}">
-        @if ($product->image_url)
-            <img class="size-full object-cover transition duration-500 group-hover:scale-105" src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy">
+        @if ($product->primaryImageUrl())
+            <img class="size-full object-cover transition duration-500 group-hover:scale-105" src="{{ $product->primaryImageUrl() }}" alt="{{ $product->name }}" loading="lazy">
         @else
             <span class="grid size-full place-items-center bg-gradient-to-br from-brand-soft to-slate-100 text-5xl font-black text-brand/30">{{ mb_substr($product->name, 0, 1) }}</span>
         @endif

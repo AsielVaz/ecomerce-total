@@ -25,8 +25,8 @@
                     @foreach ($order->items as $item)
                         <div class="flex gap-5 p-6 sm:p-8">
                             <div class="size-24 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
-                                @if ($item->product?->image_url)
-                                    <img class="size-full object-cover" src="{{ $item->product->image_url }}" alt="{{ $item->product_name }}">
+                                @if ($item->product?->primaryImageUrl())
+                                    <img class="size-full object-cover" src="{{ $item->product->primaryImageUrl() }}" alt="{{ $item->product_name }}">
                                 @else
                                     <span class="grid size-full place-items-center text-2xl font-black text-brand/40">{{ mb_substr($item->product_name, 0, 1) }}</span>
                                 @endif

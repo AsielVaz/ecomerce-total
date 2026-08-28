@@ -26,13 +26,13 @@
                 <div class="absolute inset-8 rounded-[3rem] bg-gradient-to-br from-brand via-violet-500 to-cyan-400 opacity-80 blur-3xl"></div>
                 @if ($featuredProducts->isNotEmpty())
                     <div class="absolute left-4 top-0 w-64 rotate-[-5deg] overflow-hidden rounded-[2rem] border border-white/20 bg-white p-3 shadow-2xl">
-                        <img class="aspect-[4/3] w-full rounded-[1.4rem] object-cover" src="{{ $featuredProducts[0]->image_url }}" alt="">
+                        @if ($featuredProducts[0]->primaryImageUrl())<img class="aspect-[4/3] w-full rounded-[1.4rem] object-cover" src="{{ $featuredProducts[0]->primaryImageUrl() }}" alt="">@endif
                         <div class="p-3 text-slate-950"><p class="text-xs font-semibold text-brand">Favorito</p><p class="mt-1 font-bold">{{ $featuredProducts[0]->name }}</p></div>
                     </div>
                 @endif
                 @if ($featuredProducts->count() > 1)
                     <div class="absolute bottom-0 right-0 w-64 rotate-6 overflow-hidden rounded-[2rem] border border-white/20 bg-white p-3 shadow-2xl">
-                        <img class="aspect-[4/3] w-full rounded-[1.4rem] object-cover" src="{{ $featuredProducts[1]->image_url }}" alt="">
+                        @if ($featuredProducts[1]->primaryImageUrl())<img class="aspect-[4/3] w-full rounded-[1.4rem] object-cover" src="{{ $featuredProducts[1]->primaryImageUrl() }}" alt="">@endif
                         <div class="p-3 text-slate-950"><p class="text-xs font-semibold text-brand">Trending</p><p class="mt-1 font-bold">{{ $featuredProducts[1]->name }}</p></div>
                     </div>
                 @endif

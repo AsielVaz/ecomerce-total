@@ -32,10 +32,62 @@
                 <label class="form-label" for="description">Descripción completa</label>
                 <textarea class="form-input min-h-36 resize-y" id="description" name="description" required>{{ old('description', $product->description ?? '') }}</textarea>
             </div>
-            <div>
-                <label class="form-label" for="image_url">URL de imagen</label>
-                <input class="form-input" id="image_url" name="image_url" type="url" value="{{ old('image_url', $product->image_url ?? '') }}" placeholder="https://...">
-            </div>
+            <section class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+                <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-start">
+                    <div>
+                        <h3 class="font-bold text-slate-950">Galería de imágenes</h3>
+                        <p class="mt-1 text-xs leading-5 text-slate-500">La primera imagen será la portada. Puedes combinar URLs y archivos subidos.</p>
+                    </div>
+                    <span class="w-fit rounded-full bg-white px-3 py-1 text-[11px] font-bold text-slate-500 shadow-sm">JPG, PNG o WEBP · 5 MB</span>
+                </div>
+
+                @if ($editing && $product->images->isNotEmpty())
+                    <div class="mt-5">
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Imágenes actuales</p>
+                        <div class="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                            @foreach ($product->images as $image)
+                                <label class="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-2">
+                                    <img class="aspect-[4/3] w-full rounded-lg object-cover" src="{{ $image->resolvedUrl() }}" alt="Imagen {{ $loop->iteration }} de {{ $product->name }}">
+                                    <span class="mt-2 flex items-center gap-2 rounded-lg px-1 py-1 text-xs font-semibold text-slate-600 group-hover:text-rose-600">
+                                        <input class="size-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500" name="removed_image_ids[]" type="checkbox" value="{{ $image->id }}" @checked(in_array($image->id, old('removed_image_ids', [])))>
+                                        Retirar imagen
+                                    </span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                <div class="mt-5">
+                    <label class="form-label" for="image-url-0">Agregar mediante URL</label>
+                    <div class="grid gap-2" data-image-url-list>
+                        @foreach (old('image_urls', ['']) as $index => $imageUrl)
+                            <div class="flex gap-2" data-image-url-row>
+                                <input class="form-input" id="image-url-{{ $index }}" name="image_urls[]" type="url" value="{{ $imageUrl }}" placeholder="https://ejemplo.com/imagen.jpg">
+                                <button class="grid size-12 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-lg font-bold text-slate-400 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600" type="button" data-remove-image-url aria-label="Quitar URL">×</button>
+                            </div>
+                        @endforeach
+                    </div>
+                    <button class="mt-3 inline-flex items-center gap-2 text-xs font-bold text-brand hover:text-brand-dark" type="button" data-add-image-url>＋ Agregar otra URL</button>
+                    @if ($errors->has('image_urls') || $errors->has('image_urls.*'))
+                        <p class="mt-2 text-xs font-semibold text-rose-600">{{ $errors->first('image_urls.*') ?: $errors->first('image_urls') }}</p>
+                    @endif
+                </div>
+
+                <div class="mt-5">
+                    <label class="form-label" for="images">Subir desde este dispositivo</label>
+                    <label class="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-white px-5 py-8 text-center hover:border-brand/50 hover:bg-brand-soft/40" for="images">
+                        <span class="grid size-11 place-items-center rounded-full bg-brand-soft text-xl text-brand">↑</span>
+                        <strong class="mt-3 text-sm text-slate-800">Seleccionar una o varias imágenes</strong>
+                        <span class="mt-1 text-xs text-slate-400">Hasta 8 archivos por vez</span>
+                    </label>
+                    <input class="sr-only" id="images" name="images[]" type="file" accept="image/jpeg,image/png,image/webp" multiple data-image-file-input>
+                    <p class="mt-2 text-xs font-medium text-slate-500" data-image-file-summary>Ningún archivo seleccionado.</p>
+                    @if ($errors->has('images') || $errors->has('images.*'))
+                        <p class="mt-2 text-xs font-semibold text-rose-600">{{ $errors->first('images.*') ?: $errors->first('images') }}</p>
+                    @endif
+                </div>
+            </section>
         </div>
     </div>
 

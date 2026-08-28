@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Tests\TestCase;
 
@@ -61,5 +62,31 @@ class StorefrontTest extends TestCase
             ->assertSee('Pulse Test · DTOUCHO')
             ->assertSee('Descripción social específica.')
             ->assertSee('https://images.example.com/pulse-test.jpg', false);
+    }
+
+    public function test_product_detail_renders_all_gallery_images_in_carousel(): void
+    {
+        $product = Product::factory()->create([
+            'name' => 'Galería Test',
+            'slug' => 'galeria-test',
+            'image_url' => null,
+        ]);
+        ProductImage::factory()->for($product)->create([
+            'url' => 'https://images.example.com/gallery-front.jpg',
+            'sort_order' => 0,
+        ]);
+        ProductImage::factory()->for($product)->create([
+            'url' => 'https://images.example.com/gallery-side.jpg',
+            'sort_order' => 1,
+        ]);
+
+        $response = $this->get(route('products.show', $product));
+
+        $response
+            ->assertOk()
+            ->assertSee('data-carousel', false)
+            ->assertSee('https://images.example.com/gallery-front.jpg', false)
+            ->assertSee('https://images.example.com/gallery-side.jpg', false)
+            ->assertSee('data-carousel-next', false);
     }
 }

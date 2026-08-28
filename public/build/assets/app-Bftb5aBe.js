@@ -1,1 +1,0 @@
-document.addEventListener(`submit`,e=>{let t=e.target.closest(`form[data-confirm]`);t&&!window.confirm(t.dataset.confirm)&&e.preventDefault()});

@@ -11,13 +11,13 @@ class ProductController extends Controller
     {
         abort_unless($product->is_active, 404);
 
-        $product->load('category');
+        $product->load(['category', 'images']);
 
         $relatedProducts = Product::query()
             ->active()
             ->where('category_id', $product->category_id)
             ->whereKeyNot($product->id)
-            ->with('category')
+            ->with(['category', 'images'])
             ->orderByDesc('is_featured')
             ->orderByDesc('id')
             ->limit(4)

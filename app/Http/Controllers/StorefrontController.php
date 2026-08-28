@@ -17,7 +17,7 @@ class StorefrontController extends Controller
 
         $products = Product::query()
             ->active()
-            ->with('category')
+            ->with(['category', 'images'])
             ->when($search !== '', function (Builder $query) use ($search): void {
                 $query->where(function (Builder $searchQuery) use ($search): void {
                     $searchQuery
@@ -37,7 +37,7 @@ class StorefrontController extends Controller
         $featuredProducts = Product::query()
             ->active()
             ->where('is_featured', true)
-            ->with('category')
+            ->with(['category', 'images'])
             ->orderByDesc('created_at')
             ->limit(4)
             ->get();

@@ -4,7 +4,7 @@
 @section('meta_type', 'product')
 @section('meta_title', $product->name.' · DTOUCHO')
 @section('meta_description', $product->short_description)
-@section('meta_image', $product->image_url ?: '')
+@section('meta_image', $product->primaryImageUrl() ?: '')
 
 @section('content')
     <div class="container-page py-8 sm:py-12">
@@ -19,11 +19,34 @@
         <x-flash-message />
 
         <div class="mt-6 grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-            <div class="overflow-hidden rounded-[2rem] bg-white shadow-soft">
-                @if ($product->image_url)
-                    <img class="aspect-square size-full object-cover" src="{{ $product->image_url }}" alt="{{ $product->name }}">
+            @php($galleryImages = $product->galleryImageUrls())
+            <div>
+                @if ($galleryImages !== [])
+                    <div class="group relative overflow-hidden rounded-[2rem] bg-white shadow-soft outline-none focus-visible:ring-4 focus-visible:ring-brand/20" data-carousel tabindex="0" aria-label="Galería de {{ $product->name }}">
+                        @foreach ($galleryImages as $imageUrl)
+                            <figure class="{{ $loop->first ? '' : 'hidden' }}" data-carousel-slide aria-hidden="{{ $loop->first ? 'false' : 'true' }}">
+                                <img class="aspect-square size-full object-cover" src="{{ $imageUrl }}" alt="{{ $product->name }} · imagen {{ $loop->iteration }}">
+                            </figure>
+                        @endforeach
+
+                        @if (count($galleryImages) > 1)
+                            <button class="absolute left-4 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-xl font-bold text-slate-900 shadow-lg backdrop-blur hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand/20" type="button" data-carousel-previous aria-label="Ver imagen anterior">←</button>
+                            <button class="absolute right-4 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-xl font-bold text-slate-900 shadow-lg backdrop-blur hover:bg-white focus:outline-none focus:ring-4 focus:ring-brand/20" type="button" data-carousel-next aria-label="Ver imagen siguiente">→</button>
+                            <span class="absolute bottom-4 right-4 rounded-full bg-slate-950/75 px-3 py-1.5 text-xs font-bold text-white backdrop-blur" data-carousel-counter>1 / {{ count($galleryImages) }}</span>
+                        @endif
+                    </div>
+
+                    @if (count($galleryImages) > 1)
+                        <div class="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-5" aria-label="Miniaturas de la galería">
+                            @foreach ($galleryImages as $imageUrl)
+                                <button class="overflow-hidden rounded-xl border-2 {{ $loop->first ? 'border-brand' : 'border-transparent hover:border-brand/30' }} bg-white p-1 shadow-sm focus:outline-none focus:ring-4 focus:ring-brand/10" type="button" data-carousel-thumbnail="{{ $loop->index }}" aria-label="Mostrar imagen {{ $loop->iteration }}" aria-current="{{ $loop->first ? 'true' : 'false' }}">
+                                    <img class="aspect-square size-full rounded-lg object-cover" src="{{ $imageUrl }}" alt="">
+                                </button>
+                            @endforeach
+                        </div>
+                    @endif
                 @else
-                    <div class="grid aspect-square place-items-center bg-gradient-to-br from-brand-soft to-slate-100 text-8xl font-black text-brand/30">{{ mb_substr($product->name, 0, 1) }}</div>
+                    <div class="grid aspect-square overflow-hidden rounded-[2rem] bg-gradient-to-br from-brand-soft to-slate-100 shadow-soft place-items-center text-8xl font-black text-brand/30">{{ mb_substr($product->name, 0, 1) }}</div>
                 @endif
             </div>
 

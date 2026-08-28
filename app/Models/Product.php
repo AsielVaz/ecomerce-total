@@ -45,6 +45,41 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    public function primaryImageUrl(): ?string
+    {
+        return $this->galleryImageUrls()[0] ?? $this->image_url;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function galleryImageUrls(): array
+    {
+        $images = $this->relationLoaded('images')
+            ? $this->images
+            : $this->images()->get();
+
+        $urls = $images
+            ->map(fn (ProductImage $image): ?string => $image->resolvedUrl())
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        if ($urls === [] && $this->image_url !== null) {
+            return [$this->image_url];
+        }
+
+        return $urls;
+    }
+
     #[Scope]
     protected function active(Builder $query): Builder
     {
